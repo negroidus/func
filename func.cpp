@@ -1,6 +1,6 @@
-﻿#include <iostream>
+#include <iostream>
 #include <vector>
-#include <cassert>
+#include <gtest/gtest.h>
 
 // Функция, которая увеличивает все элементы вектора на n
 std::vector<int> increaseVectorElements(const std::vector<int>& vec, int n) {
@@ -11,35 +11,44 @@ std::vector<int> increaseVectorElements(const std::vector<int>& vec, int n) {
     return result;
 }
 
-// Тест функции
-void testIncreaseVectorElements() {
-    // Тестовые случаи
-    std::vector<std::tuple<std::vector<int>, int, std::vector<int>>> testCases = {
-        {{1, 2, 3}, 2, {3, 4, 5}},
-        {{-1, -2, -3}, 5, {4, 3, 2}},
-        {{0, 0, 0}, 1, {1, 1, 1}},
-        {{100, 200, 300}, -100, {0, 100, 200}},
-        {{}, 10, {}}
-    };
-
-    for (size_t i = 0; i < testCases.size(); ++i) {
-        // Распаковка кортежа для текущего теста
-        const std::vector<int>& vec = std::get<0>(testCases[i]);
-        int n = std::get<1>(testCases[i]);
-        const std::vector<int>& expectedVec = std::get<2>(testCases[i]);
-
-        // Вызов тестируемой функции
-        std::vector<int> result = increaseVectorElements(vec, n);
-
-        // Проверка результата
-        assert(result == expectedVec && "Test failed!");
-    }
-
-    std::cout << "All tests passed." << std::endl;
+// Тесты функции
+TEST(IncreaseVectorElementsTest, HandlesPositiveIncrease) {
+    std::vector<int> vec = {1, 2, 3};
+    int n = 2;
+    std::vector<int> expected = {3, 4, 5};
+    EXPECT_EQ(increaseVectorElements(vec, n), expected);
 }
 
-int main() {
-    // Запуск теста
-    testIncreaseVectorElements();
-    return 0;
+TEST(IncreaseVectorElementsTest, HandlesNegativeNumbers) {
+    std::vector<int> vec = {-1, -2, -3};
+    int n = 5;
+    std::vector<int> expected = {4, 3, 2};
+    EXPECT_EQ(increaseVectorElements(vec, n), expected);
 }
+
+TEST(IncreaseVectorElementsTest, HandlesZeros) {
+    std::vector<int> vec = {0, 0, 0};
+    int n = 1;
+    std::vector<int> expected = {1, 1, 1};
+    EXPECT_EQ(increaseVectorElements(vec, n), expected);
+}
+
+TEST(IncreaseVectorElementsTest, HandlesLargeNumbers) {
+    std::vector<int> vec = {100, 200, 300};
+    int n = -100;
+    std::vector<int> expected = {0, 100, 200};
+    EXPECT_EQ(increaseVectorElements(vec, n), expected);
+}
+
+TEST(IncreaseVectorElementsTest, HandlesEmptyVector) {
+    std::vector<int> vec = {};
+    int n = 10;
+    std::vector<int> expected = {};
+    EXPECT_EQ(increaseVectorElements(vec, n), expected);
+}
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
